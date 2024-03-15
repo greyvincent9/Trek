@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Text, Button, Image } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	Button,
+	Image,
+	TouchableHighlight,
+} from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -10,10 +17,25 @@ import {
 } from "react-native-heroicons/solid";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { Rowing } from "@mui/icons-material";
+import { TouchableOpacity } from "react-native";
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
-	const diningIcon = <Icon name="lunch-dining" size={16} color="#ed9b20" />;
+	const [selectedCategory, setSelectedCategory] = useState(false);
+	const handlePress = () => {
+		setSelectedCategory(!selectedCategory);
+	};
+
+	const touchProps = {
+		activeOpacity: 1,
+		underlayColor: "blue", // <-- "backgroundColor" will be always overwritten by "underlayColor"
+		style: selectedCategory
+			? styles.selectedCategoryButton
+			: styles.categoryButton, // <-- but you can still apply other style changes
+		onHideUnderlay: () => setSelectedCategory(false),
+		onShowUnderlay: () => setSelectedCategory(true),
+		onPress: () => console.log("HELLO"), // <-- "onPress" is apparently required
+	};
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -49,40 +71,26 @@ const HomeScreen = () => {
 
 					{/* Buttons */}
 					<View style={styles.categoryButtonRow}>
-						<View>
-							<View style={styles.categoryButton}>
-								<Text
-									style={{
-										color: "white",
-										fontWeight: "500",
-									}}
-								>
-									All
-								</Text>
+						<TouchableOpacity {...touchProps}>
+							<View>
+								<Text>All</Text>
 							</View>
-						</View>
-						<View>
-							<View style={styles.categoryButton}>
-								<Text
-									style={{
-										color: "black",
-									}}
-								>
-									Dining
-								</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							onPress={() => {
+								setSelectedCategory(handlePress);
+							}}
+							style={[
+								selectedCategory
+									? styles.categoryButton
+									: styles.selectedCategoryButton,
+							]}
+						>
+							<View>
+								<Text>Touch Here</Text>
 							</View>
-						</View>
-						<View>
-							<View style={styles.categoryButton}>
-								<Text
-									style={{
-										color: "white",
-									}}
-								>
-									Entertainment
-								</Text>
-							</View>
-						</View>
+						</TouchableOpacity>
 					</View>
 				</View>
 				<View style={styles.transactionContainer}>
@@ -245,7 +253,6 @@ const styles = StyleSheet.create({
 		height: 300,
 		alignSelf: "center",
 		borderRadius: 20,
-
 		backgroundColor: "lightblue",
 	},
 	dateTitle: {
@@ -271,18 +278,36 @@ const styles = StyleSheet.create({
 	categoryButtonRow: {
 		display: "flex",
 		flexDirection: "row",
+		justifyContent: "flex-start",
+		width: "95%",
+		borderColor: "black",
+		borderWidth: 1,
 	},
 	categoryButton: {
 		marginLeft: 15,
-		marginTop: 40,
+		marginTop: 30,
+		paddingHorizontal: 10,
+		paddingVertical: 5,
 		justifyContent: "center",
 		alignItems: "center",
-		height: 26,
-		width: 48,
 		borderRadius: 5,
 		borderColor: "black",
 		borderWidth: 1,
-		backgroundColor: "#4F4CDE",
+		color: "white",
+		// backgroundColor: "#4F4CDE",
+	},
+	selectedCategoryButton: {
+		marginLeft: 15,
+		marginTop: 30,
+		paddingHorizontal: 10,
+		paddingVertical: 5,
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 5,
+		borderColor: "black",
+		borderWidth: 1,
+		color: "white",
+		// backgroundColor: null,
 	},
 	transactionContainer: {
 		marginTop: 20,
