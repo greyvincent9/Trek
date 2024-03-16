@@ -6,6 +6,7 @@ import {
 	Button,
 	Image,
 	TouchableHighlight,
+	Pressable,
 } from "react-native";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +17,6 @@ import {
 	ChevronRightIcon,
 } from "react-native-heroicons/solid";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { BreakfastDining, Rowing } from "@mui/icons-material";
 import { TouchableOpacity } from "react-native";
 
 const categories = [
@@ -40,22 +40,54 @@ const transactions = [
 	{
 		id: 2,
 		transactionType: "expense",
-		name: "Breakfast",
+		name: "movie",
 		date: "12 Mar 2024",
-		category: "Dining",
+		category: "Entertainment",
 		amount: "20.00",
 	},
 	{
 		id: 3,
 		transactionType: "income",
+		name: "misc",
+		date: "12 Mar 2024",
+		category: "Misc",
+		amount: "20.00",
+	},
+	{
+		id: 4,
+		transactionType: "income",
 		name: "Breakfast",
 		date: "12 Mar 2024",
 		category: "Dining",
 		amount: "20.00",
 	},
 	{
-		id: 4,
-		transactionType: "income",
+		id: 5,
+		transactionType: "expense",
+		name: "Bill",
+		date: "12 Mar 2024",
+		category: "Bill",
+		amount: "20.00",
+	},
+	{
+		id: 5,
+		transactionType: "expense",
+		name: "Breakfast",
+		date: "12 Mar 2024",
+		category: "Dining",
+		amount: "20.00",
+	},
+	{
+		id: 5,
+		transactionType: "expense",
+		name: "Grocs",
+		date: "12 Mar 2024",
+		category: "Groceries",
+		amount: "20.00",
+	},
+	{
+		id: 5,
+		transactionType: "expense",
 		name: "Breakfast",
 		date: "12 Mar 2024",
 		category: "Dining",
@@ -108,27 +140,33 @@ const HomeScreen = () => {
 					</View>
 
 					{/* Buttons */}
-					<View style={{ display: "flex", flexDirection: "row" }}>
+					<View
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							alignItems: "center",
+							height: 100,
+						}}
+					>
 						<ScrollView
 							horizontal
+							showsHorizontalScrollIndicator={false}
 							contentContainerStyle={styles.categoryButtonRow}
 						>
 							{categories.map((cat) => {
 								if (cat == activeCategory) {
 									// show gradient category
 									return (
-										<TouchableOpacity
-											key={cat}
-											value={cat}
-											style={styles.categoryButton}
+										<Pressable
+											style={[styles.categoryButton]}
 										>
 											<Text>{cat}</Text>
-										</TouchableOpacity>
+										</Pressable>
 									);
 								} else {
 									// show normal category
 									return (
-										<TouchableOpacity
+										<Pressable
 											onPress={() =>
 												setActiveCategory(cat)
 											}
@@ -138,7 +176,7 @@ const HomeScreen = () => {
 											}
 										>
 											<Text>{cat}</Text>
-										</TouchableOpacity>
+										</Pressable>
 									);
 								}
 							})}
@@ -149,26 +187,59 @@ const HomeScreen = () => {
 					<Text style={styles.transactionTitle}>Transactions</Text>
 
 					{transactions.map((transaction) => {
+						switch (transaction.category) {
+							case "Dining":
+								icon = "lunch-dining";
+								color = "#ed9b20";
+								break;
+							case "Groceries":
+								icon = "local-grocery-store";
+								color = "#71797E";
+								break;
+							case "Entertainment":
+								icon = "nightlife";
+								color = "#000000";
+								break;
+							case "Bill":
+								icon = "payments";
+								color = "#7b9a6d";
+								break;
+							case "Misc":
+								icon = "notes";
+								color = "rgb(128, 128, 128)";
+								break;
+						}
 						return (
 							<View style={styles.transactionRow}>
-								<Icon
-									name="lunch-dining"
-									size={30}
-									color="#ed9b20"
-								/>
-								<View>
-									<Text>{transaction.name}</Text>
-									<Text>{transaction.date}</Text>
+								<Icon name={icon} size={30} color={color} />
+								<View style={styles.transactionSecondaryRow}>
+									<View
+									// style={{
+									// 	marginLeft: 15,
+									// }}
+									>
+										<Text
+											style={
+												styles.transactionDescription
+											}
+										>
+											{transaction.name}
+										</Text>
+										<Text style={styles.transactionDate}>
+											{transaction.date}
+										</Text>
+									</View>
+									{transaction.transactionType ===
+									"expense" ? (
+										<Text style={styles.expenseText}>
+											-{transaction.amount}
+										</Text>
+									) : (
+										<Text style={styles.incomeText}>
+											+{transaction.amount}
+										</Text>
+									)}
 								</View>
-								{transaction.transactionType === "expense" ? (
-									<Text style={styles.expenseText}>
-										-{transaction.amount}
-									</Text>
-								) : (
-									<Text style={styles.incomeText}>
-										+{transaction.amount}
-									</Text>
-								)}
 							</View>
 						);
 					})}
@@ -214,33 +285,30 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 	},
 	categoryButtonRow: {
-		// justifyContent: "flex-start",
-		alignItems: "flex-start",
-		width: "95%",
+		justifyContent: "flex-end",
+		// marginTop: 30,
 		borderColor: "black",
 		borderWidth: 1,
 	},
 	categoryButton: {
 		marginLeft: 15,
-		marginTop: 50,
 		paddingHorizontal: 10,
-		paddingVertical: 5,
+		height: 30,
 		justifyContent: "center",
 		alignItems: "center",
-		borderRadius: 5,
+		borderRadius: 8,
 		borderColor: "black",
 		borderWidth: 1,
 		color: "white",
-		backgroundColor: "#4F4CDE",
+		backgroundColor: "dodgerblue",
 	},
 	selectedCategoryButton: {
 		marginLeft: 15,
-		marginTop: 50,
+		height: 30,
 		paddingHorizontal: 10,
-		paddingVertical: 5,
 		justifyContent: "center",
 		alignItems: "center",
-		borderRadius: 5,
+		borderRadius: 8,
 		borderColor: "black",
 		borderWidth: 1,
 		color: "white",
@@ -248,25 +316,18 @@ const styles = StyleSheet.create({
 	},
 	transactionContainer: {
 		marginTop: 20,
-		marginHorizontal: 10,
+		marginHorizontal: 15,
 		width: "95%",
-		// height: 300,
 		alignSelf: "center",
 		borderRadius: 20,
 		backgroundColor: "lightblue",
 	},
-	transactionSecondaryContainer: {
-		paddingLeft: 15,
-		width: 310,
-		display: "flex",
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-	},
+
 	transactionTitle: {
-		margin: 15,
+		marginTop: 15,
+		marginHorizontal: 15,
 		fontSize: 24,
-		paddingBottom: 20,
+		// paddingBottom: 20,
 		fontWeight: "bold",
 		borderBottomColor: "black",
 		borderBottomWidth: StyleSheet.hairlineWidth,
@@ -275,20 +336,37 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		alignItems: "center",
-		margin: 10,
-		fontSize: 24,
-		paddingBottom: 20,
-		fontWeight: "bold",
-		borderBottomColor: "black",
+		marginHorizontal: 15,
+		// justifyContent: "space-between",
+		paddingVertical: 20,
+
 		borderBottomWidth: StyleSheet.hairlineWidth,
 	},
-	expenseText: {
+	transactionSecondaryRow: {
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+
+		width: "87.5%",
+		marginLeft: 15,
+		justifyContent: "space-between",
+	},
+	transactionDescription: {
 		fontSize: 16,
+		fontWeight: "bold",
+		color: "black",
+	},
+	transactionDate: {
+		fontSize: 12,
+		fontWeight: "400",
+	},
+	expenseText: {
+		fontSize: 20,
 		fontWeight: "bold",
 		color: "red",
 	},
 	incomeText: {
-		fontSize: 16,
+		fontSize: 20,
 		fontWeight: "bold",
 		color: "green",
 	},
