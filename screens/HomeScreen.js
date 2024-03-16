@@ -16,26 +16,64 @@ import {
 	ChevronRightIcon,
 } from "react-native-heroicons/solid";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { Rowing } from "@mui/icons-material";
+import { BreakfastDining, Rowing } from "@mui/icons-material";
 import { TouchableOpacity } from "react-native";
+
+const categories = [
+	"All",
+	"Dining",
+	"Groceries",
+	"Entertainment",
+	"Bill",
+	"Misc",
+];
+
+const transactions = [
+	{
+		id: 1,
+		transactionType: "expense",
+		name: "Breakfast",
+		date: "12 Mar 2024",
+		category: "Dining",
+		amount: "20.00",
+	},
+	{
+		id: 2,
+		transactionType: "expense",
+		name: "Breakfast",
+		date: "12 Mar 2024",
+		category: "Dining",
+		amount: "20.00",
+	},
+	{
+		id: 3,
+		transactionType: "income",
+		name: "Breakfast",
+		date: "12 Mar 2024",
+		category: "Dining",
+		amount: "20.00",
+	},
+	{
+		id: 4,
+		transactionType: "income",
+		name: "Breakfast",
+		date: "12 Mar 2024",
+		category: "Dining",
+		amount: "20.00",
+	},
+	{
+		id: 5,
+		transactionType: "expense",
+		name: "Breakfast",
+		date: "12 Mar 2024",
+		category: "Dining",
+		amount: "20.00",
+	},
+];
 
 const HomeScreen = () => {
 	const navigation = useNavigation();
-	const [selectedCategory, setSelectedCategory] = useState(false);
-	const handlePress = () => {
-		setSelectedCategory(!selectedCategory);
-	};
-
-	const touchProps = {
-		activeOpacity: 1,
-		underlayColor: "blue", // <-- "backgroundColor" will be always overwritten by "underlayColor"
-		style: selectedCategory
-			? styles.selectedCategoryButton
-			: styles.categoryButton, // <-- but you can still apply other style changes
-		onHideUnderlay: () => setSelectedCategory(false),
-		onShowUnderlay: () => setSelectedCategory(true),
-		onPress: () => console.log("HELLO"), // <-- "onPress" is apparently required
-	};
+	const [activeCategory, setActiveCategory] = useState("All");
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -70,169 +108,70 @@ const HomeScreen = () => {
 					</View>
 
 					{/* Buttons */}
-					<View style={styles.categoryButtonRow}>
-						<TouchableOpacity {...touchProps}>
-							<View>
-								<Text>All</Text>
-							</View>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							onPress={() => {
-								setSelectedCategory(handlePress);
-							}}
-							style={[
-								selectedCategory
-									? styles.categoryButton
-									: styles.selectedCategoryButton,
-							]}
+					<View style={{ display: "flex", flexDirection: "row" }}>
+						<ScrollView
+							horizontal
+							contentContainerStyle={styles.categoryButtonRow}
 						>
-							<View>
-								<Text>Touch Here</Text>
-							</View>
-						</TouchableOpacity>
+							{categories.map((cat) => {
+								if (cat == activeCategory) {
+									// show gradient category
+									return (
+										<TouchableOpacity
+											key={cat}
+											value={cat}
+											style={styles.categoryButton}
+										>
+											<Text>{cat}</Text>
+										</TouchableOpacity>
+									);
+								} else {
+									// show normal category
+									return (
+										<TouchableOpacity
+											onPress={() =>
+												setActiveCategory(cat)
+											}
+											key={cat}
+											style={
+												styles.selectedCategoryButton
+											}
+										>
+											<Text>{cat}</Text>
+										</TouchableOpacity>
+									);
+								}
+							})}
+						</ScrollView>
 					</View>
 				</View>
 				<View style={styles.transactionContainer}>
 					<Text style={styles.transactionTitle}>Transactions</Text>
-					<View style={styles.transactionRow}>
-						<Icon name="lunch-dining" size={30} color="#ed9b20" />
-						<View style={styles.transactionSecondaryContainer}>
-							<View>
-								<Text style={styles.transactionDescription}>
-									Breakfast
-								</Text>
-								<Text style={{ fontSize: 12, color: "gray" }}>
-									12 Mar 2024
-								</Text>
-							</View>
 
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: "bold",
-									color: "red",
-								}}
-							>
-								$20.00
-							</Text>
-						</View>
-					</View>
-					<View style={styles.transactionRow}>
-						<Icon name="lunch-dining" size={30} color="#ed9b20" />
-						<View style={styles.transactionSecondaryContainer}>
-							<View>
-								<Text style={styles.transactionDescription}>
-									Breakfast
-								</Text>
-								<Text style={{ fontSize: 12, color: "gray" }}>
-									12 Mar 2024
-								</Text>
+					{transactions.map((transaction) => {
+						return (
+							<View style={styles.transactionRow}>
+								<Icon
+									name="lunch-dining"
+									size={30}
+									color="#ed9b20"
+								/>
+								<View>
+									<Text>{transaction.name}</Text>
+									<Text>{transaction.date}</Text>
+								</View>
+								{transaction.transactionType === "expense" ? (
+									<Text style={styles.expenseText}>
+										-{transaction.amount}
+									</Text>
+								) : (
+									<Text style={styles.incomeText}>
+										+{transaction.amount}
+									</Text>
+								)}
 							</View>
-
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: "bold",
-									color: "red",
-								}}
-							>
-								$20.00
-							</Text>
-						</View>
-					</View>
-					<View style={styles.transactionRow}>
-						<Icon name="lunch-dining" size={30} color="#ed9b20" />
-						<View style={styles.transactionSecondaryContainer}>
-							<View>
-								<Text style={styles.transactionDescription}>
-									Breakfast
-								</Text>
-								<Text style={{ fontSize: 12, color: "gray" }}>
-									12 Mar 2024
-								</Text>
-							</View>
-
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: "bold",
-									color: "red",
-								}}
-							>
-								$20.00
-							</Text>
-						</View>
-					</View>
-					<View style={styles.transactionRow}>
-						<Icon name="lunch-dining" size={30} color="#ed9b20" />
-						<View style={styles.transactionSecondaryContainer}>
-							<View>
-								<Text style={styles.transactionDescription}>
-									Breakfast
-								</Text>
-								<Text style={{ fontSize: 12, color: "gray" }}>
-									12 Mar 2024
-								</Text>
-							</View>
-
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: "bold",
-									color: "red",
-								}}
-							>
-								$20.00
-							</Text>
-						</View>
-					</View>
-					<View style={styles.transactionRow}>
-						<Icon name="lunch-dining" size={30} color="#ed9b20" />
-						<View style={styles.transactionSecondaryContainer}>
-							<View>
-								<Text style={styles.transactionDescription}>
-									Breakfast
-								</Text>
-								<Text style={{ fontSize: 12, color: "gray" }}>
-									12 Mar 2024
-								</Text>
-							</View>
-
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: "bold",
-									color: "red",
-								}}
-							>
-								$20.00
-							</Text>
-						</View>
-					</View>
-					<View style={styles.transactionRow}>
-						<Icon name="lunch-dining" size={30} color="#ed9b20" />
-						<View style={styles.transactionSecondaryContainer}>
-							<View>
-								<Text style={styles.transactionDescription}>
-									Breakfast
-								</Text>
-								<Text style={{ fontSize: 12, color: "gray" }}>
-									12 Mar 2024
-								</Text>
-							</View>
-
-							<Text
-								style={{
-									fontSize: 18,
-									fontWeight: "bold",
-									color: "red",
-								}}
-							>
-								$20.00
-							</Text>
-						</View>
-					</View>
+						);
+					})}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -271,21 +210,19 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		marginTop: 10,
 		height: 160,
-		width: 160,
-		borderRadius: 100,
-		backgroundColor: "#BC4545",
+		width: "60%",
+		borderRadius: 20,
 	},
 	categoryButtonRow: {
-		display: "flex",
-		flexDirection: "row",
-		justifyContent: "flex-start",
+		// justifyContent: "flex-start",
+		alignItems: "flex-start",
 		width: "95%",
 		borderColor: "black",
 		borderWidth: 1,
 	},
 	categoryButton: {
 		marginLeft: 15,
-		marginTop: 30,
+		marginTop: 50,
 		paddingHorizontal: 10,
 		paddingVertical: 5,
 		justifyContent: "center",
@@ -294,11 +231,11 @@ const styles = StyleSheet.create({
 		borderColor: "black",
 		borderWidth: 1,
 		color: "white",
-		// backgroundColor: "#4F4CDE",
+		backgroundColor: "#4F4CDE",
 	},
 	selectedCategoryButton: {
 		marginLeft: 15,
-		marginTop: 30,
+		marginTop: 50,
 		paddingHorizontal: 10,
 		paddingVertical: 5,
 		justifyContent: "center",
@@ -307,7 +244,7 @@ const styles = StyleSheet.create({
 		borderColor: "black",
 		borderWidth: 1,
 		color: "white",
-		// backgroundColor: null,
+		backgroundColor: null,
 	},
 	transactionContainer: {
 		marginTop: 20,
@@ -345,9 +282,15 @@ const styles = StyleSheet.create({
 		borderBottomColor: "black",
 		borderBottomWidth: StyleSheet.hairlineWidth,
 	},
-	transactionDescription: {
+	expenseText: {
 		fontSize: 16,
 		fontWeight: "bold",
+		color: "red",
+	},
+	incomeText: {
+		fontSize: 16,
+		fontWeight: "bold",
+		color: "green",
 	},
 });
 
